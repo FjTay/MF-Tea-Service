@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<style>
+
+body {
+  margin: 0;
+  cursor: context-menu;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  font-variant: small-caps;
+  overflow-x: hidden;
+  font-size: 1em;
+  font-family: "Times New Roman", Times, serif;
+  text-align: center;
+}
+
+#header, #footer {
+  width: 100vw;
+  height: 2.5em;
+  background: linear-gradient(to right, #93b4c1 10%, #667d87 35%, #667d87 65%, #93b4c1 100%);
+}
+
+#header1, #footer1 {
+  width: 100vw;
+  background: linear-gradient(to right, #EEE8AA 25%, #DAA520 100%);
+  height: 0.5em;
+}
+
+#menu {
+  width: 3em;
+  height: 3em;
+  background: #667d87;
+  position: absolute;
+  border-radius: 100px;
+  margin-top: -1.75em;
+  border: 2px solid #EEE8AA;
+  box-shadow: 0 0 0 2px #667d87, 0 0 0 4px #EEE8AA;
+  margin-left: 4px;
+  transition: 0.5s;
+  background-size: cover;
+  z-index: 2;
+}
+
+#menu.up {
+  margin-left: calc(50vw - (1.5em + 2px));
+  border: 2px solid #EBDD93;
+  box-shadow: 0 0 0 2px #667d87, 0 0 0 4px #EBDD93;
+  background-image: url('https://babbler-app-storage-prod.s3.eu-west-1.amazonaws.com/upload/Brand/6311/c28a3640ef628965ffba00e8fa95d5e6.png');
+}
+
+.bar {
+  width: 2.2em;
+  height: 0.3em;
+  margin-bottom: 0.3em;
+  background: #EEE8AA;
+  margin-left: 0.4em;
+  display: block;
+  border-radius: 100px;
+}
+
+.bar.hidden {
+  display: none;
+}
+
+#main {
+  width: 100vw;
+  height: 70vh;
+  background: white;
+}
+
+#sidebarcontainer {
+  height: calc(70vh + 12em);
+  background: #EEE8AA;
+  margin-left: -100vw;
+  width: 100vw;
+  transition: 0.5s;
+  position: absolute;
+  z-index: 1;
+}
+
+#sidebarcontainer.visible {
+   margin-left: 0vw;
+   background: linear-gradient(to right, #EEE8AA 25%, #DAA520 100%);
+}
+
+#sidebar {
+  width: 96%;
+  height: 100%;
+  margin-left: 2%;
+  background: linear-gradient(to right, #93b4c1 10%, #667d87 35%, #667d87 65%, #93b4c1 100%);
+  overflow-x: hidden;
+}
+
+#collectiondisplay {
+  width: 100vw;
+  height: 8em;
+  background: white;
+  position: absolute;
+  transition: 0.4s;
+  margin-left: -100vw;
+  margin-top: calc(1.5em + 6px);
+  z-index: 2;
+  border: 2px solid #667d87;
+  box-sizing: border-box;
+}
+
+#collectiondisplay.visible {
+  margin-left: 0vw;
+}
+
+#collectiondisplaycontainer {
+  width: 90%;
+  background: white;
+  height: 100%;
+  white-space: nowrap;
+  margin-left: 5%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.displayimg {
+ height: 100%;
+ transition: 0.4s;
+}
+
+#displayclose {
+  width: 5%;
+  height: 100%;
+  background: linear-gradient(to bottom, #DAA520 25%, #EEE8AA 100%);
+  margin-left: 95%;
+  margin-top: calc(-9.5em + 4px);
+  line-height: 8em;
+}
+
+#displayclose p {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #667d87;
+}
+
+.clas1, .clas2, .clas3, .optionsselect, #initbase {
+  background: #667d87;
+  color: #EEE8AA;
+  outline: 1px solid #EEE8AA;
+  outline-offset: -5px;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+.clas2, .clas3, .optionsselect {
+  margin-left: -100%;
+}
+
+#options {
+  background: #EEE8AA;
+  color: #36454f;
+  outline: 1px solid #36454f;
+  outline-offset: -5px;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+#initbase {
+  padding-top: 0em;
+  padding-bottom: 0em;
+  transition: 0.5s;
+}
+
+#initbase.down {
+  margin-top: calc(1.5em + 4px);
+}
+
+#initbase.offset {
+  margin-top: calc(9.5em + 8px);
+}
+
+#init {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+::-webkit-scrollbar {
+width: 5px;
+height: 5px;
+border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+box-shadow: inset 0 0 5px white;
+border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+background: #667d87;
+border-radius: 10px;
+}
+
+#displayteapot {
+  width: 15em;
+  margin-top: calc(70vh - 15em);
+}
+
+#teacupcontainer {
+  width: 100vw;
+  height: 12em;
+  background: transparent;
+  position: relative;
+}
+
+.teacup {
+  width: 6em;
+}
+
+#tc1, #tc2, #tc3, #tc4, #tc5, #tc6 {
+  width: 6em;
+  height: 6em;
+  display: inline-block;
+}
+
+#optionscontainer {
+  width: 96vw;
+  height: calc(70vh + 12em);
+  background: linear-gradient(to right, #93b4c1 10%, #667d87 35%, #667d87 65%, #93b4c1 100%);
+  margin-left: -100vw;
+  transition: 0.5s;
+  position: absolute;
+  z-index: 1;
+  overflow-x: hidden;
+}
+
+#optionscontainer.visible {
+  margin-left: 2vw;
+}
+
+#nbteacup {
+  margin-top: calc(1.5em + 4px);
+}
+
+.optionsselect {
+  margin-left: -100vw;
+  transition: 0.5s;
+}
+
+.optionsselect.visible {
+  margin-left: 0vw;
+}
+
+#nbteacupchoice {
+  height: 0em;
+  width: 100%;
+  background: #667d87;
+  margin-bottom: 5px;
+  transition: 0.25s;
+}
+
+#nbteacupchoice.visible {
+  height: 6em;
+}
+
+.teacupnumber {
+  height: 0em;
+  width: 100%;
+  font-size: 0em;
+  transition: 0s;
+  color: #EEE8AA;
+}
+
+.teacupnumber.visible {
+  height: 1em;
+  font-size: 1em;
+  transition: 0.25s;
+}
+
+.teacupnumber:hover {
+   background: lightblue;
+   color: #ad831b;
+}
+
+.span1::after {
+  font-family: arial, sans-serif;
+  color: #96281b;
+  position: absolute;
+  content: "\002718";
+}
+
+.span2::after {
+  font-family: arial, sans-serif;
+  color: #33cc33;
+  position: absolute;
+  content: "\002714";
+}
+
+#messagepadding {
+  width: 100vw;
+  height: calc(70vh + 18em);
+  background: rgba(34, 34, 34, 0.7);
+  position: absolute;
+  z-index: 5;
+}
+
+#message {
+  width: 60vw;
+  margin-left: 20vw;
+  height: 70vh;
+  margin-top: 9em;
+  background: linear-gradient(to right, #EADC91 25%, #DEB139 100%);
+  border-radius: 20px;
+}
+
+#messagecontent {
+ width: calc(60vw - 0.5em);
+ height: calc(70vh - 0.5em);
+ margin-top: 0.25em;
+ margin-left: 0.25em;
+ border-radius: 17px;
+ background: linear-gradient(to right, #93b4c1 10%, #667d87 35%, #667d87 65%, #93b4c1 100%);
+ position: absolute;
+ color: white;
+}
+
+#messageclose {
+  width: 1.5em;
+  height: 1.5em;
+  background: #93b4c1;
+  border: 0.12em solid #DAA520;
+  border-radius: 100px;
+  margin-left: calc(60vw - 1.95em);
+  margin-top: -0.13em;
+  font-size: 1.5em;
+  line-height: 1.5em;
+  font-weight: bold;
+  color: #EEE8AA;
+  z-index: 2;
+  position: absolute;
+}
+
+#circle1, #circle2 {
+  width: 1vh;
+  height: 1vh;
+  position: absolute;
+  margin-top: calc(1.5em - 0.5vh);
+  margin-left: calc(1.5em - 0.5vh);
+  opacity: 1;
+}
+
+#circle1.click, #circle2.click {
+  background-image: radial-gradient(transparent 50%, grey 65%, #93b4c1 70%);
+}
+
+/* /////////////////////////////////For tablets: //////////////////////////////////////////// */
+
+@media only screen and (min-width: 600px) {
+#sidebarcontainer {
+  width: 50.5vw;
+  background: red;
+}
+
+#sidebarcontainer.visible {
+   margin-left: 0vw;
+   background: linear-gradient(to right, #EEE8AA 25%, #E7D078 100%);
+}
+
+#sidebar {
+  width: 99%;
+  background: linear-gradient(to right, #93b4c1 5%, #667d87 100%);
+  margin-left: 0%;
+}
+
+#menu.up {
+  margin-left: calc(25vw - (1.5em + 2px));
+  border: 2px solid #EEE8AA;
+  box-shadow: 0 0 0 2px #667d87, 0 0 0 4px #EEE8AA;
+}
+
+#displayteapot {
+  width: 15em;
+}
+
+#tc1, #tc2, #tc3, #tc4, #tc5, #tc6 {
+  width: 6em;
+  height: 6em;
+  position: absolute;
+  display: block;
+}
+
+#tc1 {
+  margin-left: calc((100vw - 36em) / 2);
+}
+
+#tc2 {
+  margin-left: calc((100vw - 24em) / 2);
+}
+
+#tc3 {
+  margin-left: calc((100vw - 12em) / 2);
+}
+
+#tc4 {
+  margin-left: calc((100vw) / 2);
+}
+
+#tc5 {
+  margin-left: calc((100vw + 12em) / 2);
+}
+
+#tc6 {
+  margin-left: calc((100vw + 24em) / 2);
+}
+
+#optionscontainer {
+  width: 50vw;
+  margin-left: -50vw;
+}
+
+#optionscontainer.visible {
+  margin-left: 0vw;
+}
+
+.optionsselect {
+  margin-left: -50vw;
+}
+
+.optionsselect.visible {
+  margin-left: 0vw;
+}
+}
+
+/* ///////////////////////////////////// For desktop: ///////////////////////////////////// */
+
+@media only screen and (min-width: 768px) {
+#sidebarcontainer {
+  width: 20.5vw;
+  background: #EEE8AA;
+  margin-left: -20.5vw;
+}
+
+#sidebarcontainer.visible {
+   margin-left: 0vw;
+   background: #EEE8AA;
+}
+
+#sidebar {
+  width: 98%;
+  height: 100%;
+  background: #93b4c1;
+  margin-left: 0%;
+}
+
+#menu.up {
+  margin-left: calc(10.25vw - (1.5em + 2px));
+  border: 2px solid #EEE8AA;
+  box-shadow: 0 0 0 2px #667d87, 0 0 0 4px #EEE8AA;
+}
+
+#tc1, #tc2, #tc3, #tc4, #tc5, #tc6 {
+  position: absolute;
+  display: block;
+}
+
+#tc1 {
+  margin-left: calc((100vw - 54em) / 2);
+}
+
+#tc2 {
+  margin-left: calc((100vw - 36em) / 2);
+}
+
+#tc3 {
+  margin-left: calc((100vw - 18em) / 2);
+}
+
+#tc4 {
+  margin-left: calc((100vw) / 2);
+}
+
+#tc5 {
+  margin-left: calc((100vw + 18em) / 2);
+}
+
+#tc6 {
+  margin-left: calc((100vw + 36em) / 2);
+}
+
+#optionscontainer {
+  width: 20.2vw;
+  margin-left: -20.2vw;
+}
+
+#optionscontainer.visible {
+  margin-left: 0vw;
+}
+
+.optionsselect {
+  margin-left: -20.2vw;
+}
+
+.optionsselect.visible {
+  margin-left: 0vw;
+}
+}
+
+</style>
+</head>
+
+<body oncontextmenu="return false;">
+
+<div id="messagepadding">
+  <div id="message">
+    <div id="messagecontent">
+      <div id="messageclose">&times;</div>
+      <br><br>
+    Cliquez sur le menu en
+      <br>
+    haut à gauche et composez votre service à thé Mariage Frères.         <br><br>
+    Théières en verre soufflé, tasses en procelaine fine de Chine,     theières en font du Japon,     votre style se trouve ici,           devant vous.
+      <br><br>
+    Pour encore plus de création, cliquez sur "Plus d'Options"         <br><br>
+      ;-)
+    </div>
+  </div>
+</div>
+
+<div id="header"></div>
+<div id="header1"></div>
+
+<div id="menu">
+<div id="circle1"></div>
+<div id="circle2"></div>
+  <div class="bar" style="margin-top: 0.75em"></div>
+  <div class="bar"></div>
+  <div class="bar"></div>
+</div>
+
+<div id="sidebarcontainer">
+   <div id="sidebar">
+      <div id="initbase">
+        <div id="init"></div>
+      </div>
+      <div id="options">- Plus d'options -</div>
+      <div class="clas1">Théière</div>
+      <div class="clas1">Tasse</div>
+      <div class="clas1">Sous-tasse</div>
+      <div class="clas1">- Samovar -<br>Fontaine à thé</div>
+      <div class="clas1">Accessoire</div>
+    </div>
+</div>
+
+<div id="optionscontainer">
+<div class="optionsselect" id="nbteacup">Nombre de tasses: <span id="nbr"></span></div>
+ <div id="nbteacupchoice">
+   <div class="teacupnumber">1</div>
+   <div class="teacupnumber">2</div>
+   <div class="teacupnumber">3</div>
+   <div class="teacupnumber">4</div>
+   <div class="teacupnumber">5</div>
+   <div class="teacupnumber">6</div>
+ </div>
+ <div class="optionsselect" id="assorted">Autoriser les tasses <br>dépareillées ?&nbsp;&nbsp;<span id="span" class="span1"></span></div>
+</div>
+
+<div id="main">
+
+  <div id="collectiondisplay">
+    <div id="collectiondisplaycontainer"></div>
+    <div id="displayclose"><p>&times;</p></div>
+  </div>
+
+  <img id="displayteapot">
+ 
+</div>
+
+<div id="teacupcontainer">
+ <div id="tc1"><img class="teacup"></div>
+ <div id="tc2"><img class="teacup"></div>
+ <div id="tc3"><img class="teacup"></div>
+ <div id="tc4"><img class="teacup"></div>
+ <div id="tc5"><img class="teacup"></div>
+ <div id="tc6"><img class="teacup"></div>
+</div>
+
+<div id="footer1"></div>
+<div id="footer"></div>
+
+</body>
+
+<script>
+
+$( document ).ready(function() {
+
+let width;
+const speed = 200;
+let counter = 0;
+let index = [];
+let titles = ["Choisissez votre..."];
+const classes = [".clas1", ".clas2", ".clas3"];
+let disassorted = false;
+let collectiondisplay = false;
+let teacupnumber = 6;
+let array;
+let arrayid = [];
+let currentteapot = [];
+let currentteacup = [];
+const top = [0, 1, 2];
+const top6 = [0, 1, 2, 2, 1, 0];
+const top5 = [0, 1, 2, 1, 0];
+const top4 = [0, 1, 1, 0];
+const top3 = [0, 1, 0];
+const top2 = [0, 0];
+const top1 = [0];
+const left1 = [36, 24, 12, 0, 12, 24];
+const left2 = [54, 36, 18, 0, 18, 36];
+const list = {
+type : ["theière", "tasse", "sous-tasse"],
+
+material : [["Or et Argent", "Art Déco", "Porcelaine", "Verre Soufflé", "Fonte du Japon", "Samovar - Fontaine à Thé", "Mariage Frères"],
+["Tasses en Verre", "Tasses Art-Déco", "Porcelaine", "Verre du Japon", "Bols Matcha", "Mugs", "Mariage Frères"], 
+["Carré de Laque", "Sous-tasse en Laque", "Fonte du Japon", "Porcelaine"]],
+
+collection : [[["Argent 925", "Karawan", "Iskandar", "Love Pot"], 
+["Art-Déco", "Héritage"], 
+["Or Mat", "Platine Mat", "Rouge", "Rouge Passion", "Pourpre", "Turquoise-Emeraude", "Noir - Platine Antique", "Jaune", "Porcelaine Blanche", "Parme"], 
+["Push Me Please", "Corps Cannelé", "Corps Lisse", "Théière & Poignée 'Kyusu'"], 
+["Arare", "Natsumi", "Hisago", "Kanbin", "Gingko", "Fils de France", "Gouverneur", "Drapé", "Libellule 1930", "PLeine Lune"], 
+["Corps Cannelé", "Théière seule"], ["Théière Mariage Frères Logo"]], 
+[["Pleine Lune", "Iskandar", "Riviera", "Au Sahara", "Rainbow", "Surabaya", "Zanzibar", "Casablanca", "Himalaya", "French Tea", "Marais"],
+["Appllo", "Stream Line", "Héritage"],
+["Silver Tips", "Bol Zen", "Paramaribo", "Venus", "Lucky", "Taïping", "Taïping Or Platine"], ["Blanc", "Blanc et Or"],
+["Babylone", "Chawan", "Bol Zen"], ["Thé Français", "Mariage Frères"], ["Service Mariage Frères"]], 
+[["Mariage Frères"], ["Pleine Lune", "Riviera"], ["Chrysanthème", "Feuille"], ["Taïping"]]],
+
+references : [
+/* theieres */
+[[["A3010", "A3021"], ["A3000", "A3002"], ["A3020"], ["A3050"]],
+[["A1000", "A1010", "A1020", "A1026", "A1016", "A1006"], ["A2890"]],
+[["A1106", "A1122", "A1132", "A1686", "A1696", "A1700", "A1713", "A1721", "A1744", "A1753", "A1800", "A1810", "A1820", "A1840", "A2886"],
+["A1125", "A1135", "A1685", "A1695", "A1705", "A1715", "A1725", "A1745", "A1753", "A1805", "A1815", "A1823", "A1845", "A2885"],
+["A1134", "A1694"],
+["A1104", "A1704", "A1754", "A1841", "A2884"],
+["A1107", "A1697", "A1807"], 
+["A1128", "A1138", "A1718", "A1727", "A1748", "A1768", "A1764", "A1818", "A1828", "A1848"], 
+["A1762", "A1847", "A2887"],
+["A1801"],
+["A2825", "A2835", "A2836", "A2870", "A1811", "A1761", "A1812", "A1120", "A1821"],
+["A1726"]],
+[["A19425"],
+["A19401", "A19424", "A19426", "A19427", "A19430", "A19432", "A19434", "A19440", "A19441", "A19442", "A19443", "A19444", "A19445", "A19407", "A19408", "A19410", "A19411", "A19412", "A19413", "A19414", "A19416", "A19417", "A19450", "A19470", "A19471", "A19472", "A19473", "A19474", "A19480", "A19481", "A19490", "A19491", "A19492", "A19493", "A19460", "A19461"],
+["A19423", "A19456", "A1921", "A1922", "A1923", "A1926", "A1927", "A1940"],
+["A19420G", "A19419G", "A19422G", "A19422D", "A19419D", "A19420D"]],
+[["A4000", "A4002", "A4005", "A4010","A4011", "A4012", "A4015", "A4017", "A4019", "A4020", "A4022", "A4025"],
+["A4201", "A4200", "A4204", "A4205", "A4220"],
+["A4100"],
+["A4510", "A4511", "A4520", "A4521", "A4528", "A4529", "A4530", "A4531", "A4535", "A4537"],
+["A4600", "A4601", "A4605"],
+["A4183", "A4184", "A4185", "A4186", "A4187"],
+["A4170", "A4172", "A4174"],
+["A4163", "A4160", "A4164", "A4165"],
+["A4101", "A4106", "A4108"],
+["A41951", "A41952", "A41953", "A41954", "A4194", "A4195", "A4198", "A4199"]],
+[["A194150"],
+["A19415"]],
+[["A10701"]]],
+/* tasses */
+[[["A8380","A8381","A8382","A8383","A8384","A8385"], ["A2024"], ["A2025"], ["A2030"], ["A20400","A20401","A20402","A20403","A20404","A20405","A20406","A20407","A20408","A20409","A20410","A20411"], ["A20420","A20421","A20422"], ["A20430", "A20431","A20432"],["A20440","A20441","A20442"],["A2021"], ["A2010"], ["A2026"]],
+
+[["A20501","A20511"], ["A20500","A20510"], ["A28901"]],
+
+[["A8220","A8221","A8222","A8223","A8224","A8227"], ["A82145","A82146"], ["A8240","A8241","A8242"],["A20820","A20821","A20822"], ["A20810","A20811","A20812","A20813","A20815","A20816","A20817","A20818"], ["A23452","A23453","A23456","A23458","A23459","A23460","A23466","A23467"], ["A23447","A23448","A23468"]],
+
+[["A8250","A82500"],["A82501","A82502"]],
+
+[["A8421"], ["A8426"], ["A8429", "A84290"]],
+
+[["A2412"], ["A1074", "A2410"]],
+
+[["A1073"]]],
+/* sous tasses*/
+[[["A8395", "A8396", "A8392"]],
+[["A8380", "A8381", "A8382", "A8383", "A8384", "A8385"], ["A8386", "A8387"]],
+[["A8320", "A8321", "A8322", "A8325", "A8327"], ["A8300", "A8301", "A8302", "A8305", "A8307"]],
+[["A23502", "A23506", "A23508", "A23512", "A23513", "A23516", "A23519"]]]
+]
+};
+const level = [list.type, list.material, list.collection, list.references];
+
+$("#menu").click(function(){
+if ($("#optionscontainer").hasClass("visible")) {
+	$("#optionscontainer").toggleClass("visible");
+	$(".optionsselect").toggleClass("visible");
+  if($("#nbteacupchoice").hasClass("visible")) {
+  animate3()
+  }
+  if(collectiondisplay) {
+  $("#collectiondisplay").toggleClass("visible")
+  $("#initbase").toggleClass("offset")
+  }
+} else {
+	$("#sidebarcontainer").toggleClass("visible");
+  $("#menu").toggleClass("up");
+  $("#initbase").toggleClass("down");
+  $(".bar").toggleClass("hidden");
+}})
+
+function checkwindow() {
+width = $(window).width();
+}
+
+checkwindow()
+
+$(window).resize( function() {
+width = $(window).width();
+checksize();
+checksize2();
+})
+
+$("#init").text(titles[counter]);
+$("#nbr").text(teacupnumber);
+
+function start(x) {
+$(classes[counter]).on("click", function() {
+/* supprime le click */
+$(this).css({pointerEvents: "none"});
+let a = this.innerHTML;
+titles.push(a);
+$("#init").hide().html(a).fadeIn(speed);
+let z = $(classes[counter]).index(this);
+index.push(z);
+animate1(z);
+setTimeout(function(){$(classes[counter - 1]).hide();}, speed);
+counter >= 2 ? counter = 2: counter += 1;
+$("#counter").text(counter);
+setTimeout(function(){constructor(x)}, speed);
+})
+}
+
+function constructor(x){
+if (counter <= 1) {
+for (var i = 0; i < level[counter][index[0]].length; i++){
+animate2(level[counter][index[x]], x, i);
+}
+start(1);
+} else {
+for (var k = 0; k < level[counter][index[0]][index[1]].length; k++){
+animate2(level[counter][index[x-1]][index[x]], x, k);
+}
+}
+}
+
+start(0);
+
+function animate1(z) {
+for (var i = 0; i < $(classes[counter]).length; i++) {
+if (i == z) {
+$(classes[counter]).eq(i).animate({marginLeft: "100%"}, speed)
+} else {
+$(classes[counter]).eq(i).animate({marginLeft: "-100%"}, speed)
+}
+}
+}
+
+function animate2(f, x, i) {
+$('<div></div>').addClass(classes[counter].slice(1)).text(f[i]).appendTo("#sidebar").click(function(){
+counter == 2 ? /* double egal important */
+displaycollection(this)
+: "";
+}).animate({marginLeft: "0%"}, (speed / 2.5) * (i + 1))
+}
+
+
+$("#init").click(function() {
+if(counter == 0){ } else {
+$(classes[counter]).animate({marginLeft: "100%"}, speed);
+setTimeout(function(){$(classes[counter + 1]).remove()}, speed);
+counter <= 0 ? counter = 0 : counter -= 1;
+/* reinitialise le click */
+$(classes[counter]).css({pointerEvents: "initial"})
+$("#counter").text(counter);
+$("#init").hide().text(titles[counter]).fadeIn(speed);
+$(classes[counter]).css("margin-left", "-100%");
+setTimeout(function(){$(classes[counter]).show();
+$(classes[counter]).animate({marginLeft: "0%"}, speed);}, speed);
+index.pop();
+titles.pop();
+}});
+
+function displaycollection(zis) {
+if ($("#initbase").hasClass("offset")) { } else {
+$("#initbase").toggleClass("offset")}
+if ($("#collectiondisplay").hasClass("visible")) { } else {
+$("#collectiondisplay").toggleClass("visible")}
+collectiondisplay = true;
+$("#collectiondisplaycontainer").empty();
+let g = $(classes[counter]).index(zis);
+displaycollectionbis(g);
+}
+
+function displaycollectionbis(g) {
+array = list.references[index[0]][index[1]][g]; 
+for (var m = 0; m < array.length; m++) {
+let source = "https://www.mariagefreres.com/images/T2/" + array[m] + ".jpg";
+let teapotsource = "https://www.mariagefreres.com/images/T3/" + array[m] + ".jpg";
+$('<img>').addClass("displayimg").attr("src", source).hide().fadeIn(500 * (m + 1)).click(function(){
+displaymain(source, teapotsource, array)}).appendTo("#collectiondisplaycontainer");
+}
+}
+
+function displaymain(source, teapotsource, array) {
+reinitassorted()
+if (index[0] == 0) {displayteapot(teapotsource)} else {
+currentteacup = [];
+currentteacup.push(index[0], index[1]);
+checksize()
+checksize2()
+for(var i = 0; i < teacupnumber; i++) {
+if ($(".teacup").eq(i).hasClass("disassorted")) {} else {
+arrayid.splice(i, 1, array);
+$(".teacup").eq(i).attr("src", source);
+$(".teacup").eq(i).hide(speed).fadeIn(speed);
+}
+}
+}
+}
+
+function getteacupnumber() {
+let n = "top" + teacupnumber;
+let w = Math.ceil(teacupnumber / 2);
+let even = Math.ceil(teacupnumber / 2) == teacupnumber / 2 ? true : false;
+let y = -1;
+let z = even == true ? 0 : 0;
+for (var x = 0; x < teacupnumber; x++){
+x < w + z ? y = y + 1:y = y - 1;
+even && x == w + z ? y = y + 1: "";
+$(".teacup").eq(x).css({marginTop: top[y] + "em"})
+}
+}
+
+getteacupnumber()
+
+function displayteapot(teapotsource) {
+currentteapot = [];
+currentteapot.push(index[0], index[1]);
+checksize()
+checksize2()
+$("#displayteapot").attr("src", teapotsource)
+}
+
+function reinitassorted() {
+if (!disassorted) {$(".teacup").removeClass("disassorted")}
+}
+
+function checksize() {
+if (currentteapot[1] == 5) {
+checksizebis(".teacup", "#displayteapot", width > 768 ? "6.3em" : "4.2em")
+} else {
+checksizebis(".teacup", "#displayteapot", width > 768 ? "9em" : "6em")
+}
+}
+
+function checksizebis(a, b, c) {
+$(a).css({width: c});
+$(b).css({})
+$(a).each(function(i) {
+})
+}
+
+function checksize2() {
+if (currentteacup[1] == 1) {
+$("#displayteapot").css({width: width > 768 ? "18em" : "12em", marginTop: width > 768 ? "calc(70vh - 17em)" : "calc(70vh - 11em)"})
+} else { 
+$("#displayteapot").css({width: width > 768 ? "22.5em" : "15em", marginTop: width > 768 ? "calc(70vh - 21em)" :"calc(70vh - 14em)"})
+}
+}
+
+$("#displayclose").click(function(){
+collectiondisplay = false;
+$("#collectiondisplay").toggleClass("visible");
+if ($("#initbase").hasClass("offset")) {$("#initbase").toggleClass("offset")}
+})
+
+$("#options").click(function(){
+$("#optionscontainer").toggleClass("visible");
+if ($("#collectiondisplay").hasClass("visible")) {
+	$("#collectiondisplay").toggleClass("visible")
+	$("#initbase").toggleClass("offset")
+}
+setTimeout(function() {$(".optionsselect").toggleClass("visible")}, speed);
+})
+
+$("#nbteacup").click(function(){
+animate3()
+})
+
+$(".teacupnumber").click(function(){
+animate3()
+})
+
+function animate3(){
+$("#nbteacupchoice").toggleClass("visible")
+$(".teacupnumber").toggleClass("visible")
+}
+
+$("#assorted").click(function(){
+if (disassorted) {disassorted = false} else {disassorted = true}
+$("#span").toggleClass("span2");
+});
+
+$("#optionsclose").click(function(){
+$("#options2").toggleClass("visible3");
+$("#optionsclose").toggleClass("visible4")
+setTimeout(function(){$(".optionsselect").animate({marginLeft: "-100%"}, 0)}, speed);
+});
+
+$(".optionsselect").eq(0).click(function() {
+$(".teacupnumber").toggleClass('teacupnumber2');
+})
+
+$(".teacupnumber").click(function() {
+teacupnumber = $(".teacupnumber").index(this) + 1;
+$("#nbr").text(teacupnumber);
+getteacupnumber()
+for(var i = 0; i < $(".teacup").length; i++) {
+i < teacupnumber ? $(".teacup").eq(i).fadeIn(speed):
+$(".teacup").eq(i).fadeOut(speed);
+}
+})
+
+$(".teacup").contextmenu(function() {
+changeteacup(-1, this, 1, arrayid[$(".teacup").index(this)].length-1)
+})
+
+$(".teacup").click(function() {
+changeteacup(1, this, arrayid[$(".teacup").index(this)].length, 0)
+})
+
+function changeteacup(x, y, limit, reinit){
+if (disassorted) {
+let h = $(".teacup").index(y);
+$(y).addClass("disassorted");
+$(y).fadeOut(speed/1.5);
+setTimeout(function() {
+let r = jQuery.inArray($(y).attr("src").slice(40).replace('.jpg', ""), arrayid[h]);
+let newindex = r == limit -1 ? reinit : r + x;
+$(y).attr("src", "https://www.mariagefreres.com/images/T2/" + arrayid[h][newindex] + ".jpg").fadeIn(speed/1.5);
+}, speed/1.5)
+}
+}
+
+$("#messageclose").click(function() {
+$("#messagepadding").fadeOut(500).remove();
+circle("#circle1")
+setTimeout(function(){circle("#circle2")}, 200)
+})
+
+function circle(a){
+$(a).animate({paddingTop: "60vh", paddingBottom: "60vh", paddingRight:"60vh", paddingLeft : "60vh", marginLeft: "-60vh", marginTop: "-60vh",borderRadius: "1000px", opacity: "0"}, 500).toggleClass("click").hide(700);
+}
+
+});
+
+</script>
+</html>
