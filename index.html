@@ -724,7 +724,7 @@ checksize();
 checksize2();
 })
 
-$("#init").text("back" + titles[counter]);
+$("#init").text(titles[counter]);
 $("#nbr").text(teacupnumber);
 
 function start(x) {
@@ -732,7 +732,7 @@ $(classes[counter]).on("click", function() {
 /* supprime le click */
 $(this).css({pointerEvents: "none"});
 let a = this.innerHTML;
-titles.push(a);
+titles.push("BACK " + a);
 $("#init").hide().html(a).fadeIn(speed);
 let z = $(classes[counter]).index(this);
 index.push(z);
