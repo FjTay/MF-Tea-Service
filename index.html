@@ -786,7 +786,7 @@ counter <= 0 ? counter = 0 : counter -= 1;
 /* reinitialise le click */
 $(classes[counter]).css({pointerEvents: "initial"})
 $("#counter").text(counter);
-$("#init").hide().text(titles[counter]).fadeIn(speed);
+$("#init").hide().text("back" + titles[counter]).fadeIn(speed);
 $(classes[counter]).css("margin-left", "-100%");
 setTimeout(function(){$(classes[counter]).show();
 $(classes[counter]).animate({marginLeft: "0%"}, speed);}, speed);
