@@ -732,8 +732,8 @@ $(classes[counter]).on("click", function() {
 /* supprime le click */
 $(this).css({pointerEvents: "none"});
 let a = this.innerHTML;
-titles.push(a + "</br>- Retour -");
-$("#init").hide().html("back " + a).fadeIn(speed);
+titles.push(a + "\n- Retour -");
+$("#init").hide().html(a + "\n- Retour -").fadeIn(speed);
 let z = $(classes[counter]).index(this);
 index.push(z);
 animate1(z);
